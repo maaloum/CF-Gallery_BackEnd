@@ -1,18 +1,23 @@
 package com.cfgallery.backend.Services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.cfgallery.backend.Repositories.ItemRepository;
 import com.cfgallery.backend.Repositories.OrderRepository;
 import com.cfgallery.backend.models.CustomerOrder;
+import com.cfgallery.backend.models.Item;
 @Service
 public class OrderService {
     
     private final OrderRepository orderRepository;
+    private final ItemRepository itemRepository;
 
-    public OrderService(OrderRepository orderRepository){
+    public OrderService(OrderRepository orderRepository, ItemRepository itemRepository){
         this.orderRepository = orderRepository;
+        this.itemRepository = itemRepository;
     }
 
     // Get all orders
@@ -48,4 +53,34 @@ public class OrderService {
     public void deleteAllOrders(){
         this.orderRepository.deleteAll();
     }
+
+
+public CustomerOrder addItemsToOrder(Long orderId, List<Item> items) {
+    // Fetch the CustomerOrder by orderId
+    Optional<CustomerOrder> optionalOrder = orderRepository.findById(orderId);
+    // if (optionalOrder.isEmpty()) {
+
+    //     throw new ResourceNotFoundException("Order not found with id: " + orderId);
+    // }
+    CustomerOrder order = optionalOrder.get();
+
+    // Fetch the items by the provided itemIds
+    // List<Item> items = itemRepository.findAllById(itemIds);
+    System.out.println("items: " + items);
+
+    // if (items.isEmpty()) {
+    //     throw new ResourceNotFoundException("No items found with the given IDs");
+    // }
+
+    for (Item item : items) {
+        item.setCustomerOrder(order);  // This binds the item to the order
+    }
+
+    // Save the updated items
+    itemRepository.saveAll(items);
+
+    // Return the updated order
+    return orderRepository.save(order);
+}
+
 }

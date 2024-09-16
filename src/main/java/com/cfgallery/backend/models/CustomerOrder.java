@@ -1,5 +1,7 @@
 package com.cfgallery.backend.models;
 import java.util.Set;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +23,7 @@ public class CustomerOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany(mappedBy="customerOrder")
+   @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL)
     private Set<Item> items;
 
     @ManyToOne
@@ -30,7 +32,7 @@ public class CustomerOrder {
 
     // public Object getOrderDate() {
     //     throw new UnsupportedOperationException("Unimplemented method 'getOrderDate'");
-    // }
+    // }4
 
 
 }
